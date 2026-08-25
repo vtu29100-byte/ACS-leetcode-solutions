@@ -1,28 +1,34 @@
 class Solution {
     public ListNode reverseKGroup(ListNode head, int k) {
-        ListNode dummy = new ListNode(0);
-        dummy.next = head;
-        ListNode groupPrev = dummy;
-        while (true) {
-            ListNode kth = groupPrev;
-            for (int i = 0; i < k; i++) {
-                kth = kth.next;
-                if (kth == null) {
-                    return dummy.next;
-                }
-            }
-            ListNode groupNext = kth.next;
-            ListNode prev = groupNext;
-            ListNode curr = groupPrev.next;
-            while (curr != groupNext) {
-                ListNode temp = curr.next;
-                curr.next = prev;
-                prev = curr;
-                curr = temp;
-            }
-            ListNode temp = groupPrev.next;
-            groupPrev.next = kth;
-            groupPrev = temp;
+
+        ListNode curr = head;
+        int count = 0;
+
+        // Check whether k nodes are available
+        while (curr != null && count < k) {
+            curr = curr.next;
+            count++;
         }
+
+        // Less than k nodes -> keep them unchanged
+        if (count < k) {
+            return head;
+        }
+
+        // Reverse k nodes
+        curr = head;
+        ListNode prev = null;
+
+        for (int i = 0; i < k; i++) {
+            ListNode next = curr.next;
+            curr.next = prev;
+            prev = curr;
+            curr = next;
+        }
+
+        // head is now the last node of this group
+        head.next = reverseKGroup(curr, k);
+
+        return prev;
     }
 }
